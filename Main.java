@@ -16,7 +16,9 @@ class Main {
             System.out.println("1. Add Student");
             System.out.println("2. Display All Students");
             System.out.println("3. Search Student by ID");
-            System.out.println("4. Exit");
+            System.out.println("4. Update Student");
+            System.out.println("5. Delete Student");
+            System.out.println("6. Exit");
 
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -47,7 +49,9 @@ class Main {
                 case 2:
 
                     if (students.isEmpty()) {
+
                         System.out.println("No students found.");
+
                     } else {
 
                         for (Student s : students) {
@@ -84,6 +88,64 @@ class Main {
 
                 case 4:
 
+                    System.out.print("Enter Student ID to Update: ");
+                    int updateId = sc.nextInt();
+
+                    boolean updated = false;
+
+                    for (Student s : students) {
+
+                        if (s.id == updateId) {
+
+                            sc.nextLine();
+
+                            System.out.print("Enter New Name: ");
+                            s.name = sc.nextLine();
+
+                            System.out.print("Enter New Marks: ");
+                            s.marks = sc.nextDouble();
+
+                            System.out.println("Student Updated Successfully!");
+
+                            updated = true;
+                            break;
+                        }
+                    }
+
+                    if (!updated) {
+                        System.out.println("Student Not Found.");
+                    }
+
+                    break;
+
+                case 5:
+
+                    System.out.print("Enter Student ID to Delete: ");
+                    int deleteId = sc.nextInt();
+
+                    boolean deleted = false;
+
+                    for (Student s : students) {
+
+                        if (s.id == deleteId) {
+
+                            students.remove(s);
+
+                            System.out.println("Student Deleted Successfully!");
+
+                            deleted = true;
+                            break;
+                        }
+                    }
+
+                    if (!deleted) {
+                        System.out.println("Student Not Found.");
+                    }
+
+                    break;
+
+                case 6:
+
                     System.out.println("Exiting Program...");
                     break;
 
@@ -92,7 +154,7 @@ class Main {
                     System.out.println("Invalid Choice.");
             }
 
-        } while (choice != 4);
+        } while (choice != 6);
 
         sc.close();
     }
