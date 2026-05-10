@@ -1,11 +1,15 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.*;
 
 class Main {
 
+    static final String FILE_NAME = "students.dat";
+
     public static void main(String[] args) {
 
-        ArrayList<Student> students = new ArrayList<>();
+        ArrayList<Student> students = loadStudents();
+
         Scanner sc = new Scanner(System.in);
 
         int choice;
@@ -18,7 +22,8 @@ class Main {
             System.out.println("3. Search Student by ID");
             System.out.println("4. Update Student");
             System.out.println("5. Delete Student");
-            System.out.println("6. Exit");
+            System.out.println("6. Save Data");
+            System.out.println("7. Exit");
 
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -38,9 +43,7 @@ class Main {
                     System.out.print("Enter Student Marks: ");
                     double marks = sc.nextDouble();
 
-                    Student student = new Student(id, name, marks);
-
-                    students.add(student);
+                    students.add(new Student(id, name, marks));
 
                     System.out.println("Student Added Successfully!");
 
@@ -72,9 +75,7 @@ class Main {
 
                         if (s.id == searchId) {
 
-                            System.out.println("Student Found:");
                             s.displayStudent();
-
                             found = true;
                             break;
                         }
@@ -146,6 +147,14 @@ class Main {
 
                 case 6:
 
+                    saveStudents(students);
+
+                    break;
+
+                case 7:
+
+                    saveStudents(students);
+
                     System.out.println("Exiting Program...");
                     break;
 
@@ -154,8 +163,52 @@ class Main {
                     System.out.println("Invalid Choice.");
             }
 
-        } while (choice != 6);
+        } while (choice != 7);
 
         sc.close();
+    }
+
+    // Save students to file
+    static void saveStudents(ArrayList<Student> students) {
+
+        try {
+
+            ObjectOutputStream oos =
+                    new ObjectOutputStream(new FileOutputStream(FILE_NAME));
+
+            oos.writeObject(students);
+
+            oos.close();
+
+            System.out.println("Data Saved Successfully!");
+
+        } catch (Exception e) {
+
+            System.out.println("Error Saving Data.");
+        }
+    }
+
+    // Load students from file
+    static ArrayList<Student> loadStudents() {
+
+        ArrayList<Student> students = new ArrayList<>();
+
+        try {
+
+            ObjectInputStream ois =
+                    new ObjectInputStream(new FileInputStream(FILE_NAME));
+
+            students = (ArrayList<Student>) ois.readObject();
+
+            ois.close();
+
+            System.out.println("Data Loaded Successfully!");
+
+        } catch (Exception e) {
+
+            System.out.println("No Previous Data Found.");
+        }
+
+        return students;
     }
 }
