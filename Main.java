@@ -1,16 +1,12 @@
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.*;
 
 class Main {
 
-    static final String FILE_NAME = "students.dat";
-
     public static void main(String[] args) {
 
-        ArrayList<Student> students = loadStudents();
-
         Scanner sc = new Scanner(System.in);
+
+        StudentService service = new StudentService();
 
         int choice;
 
@@ -19,141 +15,84 @@ class Main {
             System.out.println("\n===== STUDENT MANAGEMENT SYSTEM =====");
             System.out.println("1. Add Student");
             System.out.println("2. Display All Students");
-            System.out.println("3. Search Student by ID");
+            System.out.println("3. Search Student");
             System.out.println("4. Update Student");
             System.out.println("5. Delete Student");
             System.out.println("6. Save Data");
             System.out.println("7. Exit");
 
-            System.out.print("Enter your choice: ");
+            System.out.print("Enter choice: ");
             choice = sc.nextInt();
 
             switch (choice) {
 
                 case 1:
 
-                    System.out.print("Enter Student ID: ");
+                    System.out.print("Enter ID: ");
                     int id = sc.nextInt();
 
                     sc.nextLine();
 
-                    System.out.print("Enter Student Name: ");
+                    System.out.print("Enter Name: ");
                     String name = sc.nextLine();
 
-                    System.out.print("Enter Student Marks: ");
+                    System.out.print("Enter Marks: ");
                     double marks = sc.nextDouble();
 
-                    students.add(new Student(id, name, marks));
-
-                    System.out.println("Student Added Successfully!");
+                    service.addStudent(new Student(id, name, marks));
 
                     break;
 
                 case 2:
 
-                    if (students.isEmpty()) {
-
-                        System.out.println("No students found.");
-
-                    } else {
-
-                        for (Student s : students) {
-                            s.displayStudent();
-                        }
-                    }
+                    service.displayStudents();
 
                     break;
 
                 case 3:
 
-                    System.out.print("Enter Student ID to Search: ");
+                    System.out.print("Enter Student ID: ");
                     int searchId = sc.nextInt();
 
-                    boolean found = false;
-
-                    for (Student s : students) {
-
-                        if (s.id == searchId) {
-
-                            s.displayStudent();
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        System.out.println("Student Not Found.");
-                    }
+                    service.searchStudent(searchId);
 
                     break;
 
                 case 4:
 
-                    System.out.print("Enter Student ID to Update: ");
+                    System.out.print("Enter Student ID: ");
                     int updateId = sc.nextInt();
 
-                    boolean updated = false;
+                    sc.nextLine();
 
-                    for (Student s : students) {
+                    System.out.print("Enter New Name: ");
+                    String newName = sc.nextLine();
 
-                        if (s.id == updateId) {
+                    System.out.print("Enter New Marks: ");
+                    double newMarks = sc.nextDouble();
 
-                            sc.nextLine();
-
-                            System.out.print("Enter New Name: ");
-                            s.name = sc.nextLine();
-
-                            System.out.print("Enter New Marks: ");
-                            s.marks = sc.nextDouble();
-
-                            System.out.println("Student Updated Successfully!");
-
-                            updated = true;
-                            break;
-                        }
-                    }
-
-                    if (!updated) {
-                        System.out.println("Student Not Found.");
-                    }
+                    service.updateStudent(updateId, newName, newMarks);
 
                     break;
 
                 case 5:
 
-                    System.out.print("Enter Student ID to Delete: ");
+                    System.out.print("Enter Student ID: ");
                     int deleteId = sc.nextInt();
 
-                    boolean deleted = false;
-
-                    for (Student s : students) {
-
-                        if (s.id == deleteId) {
-
-                            students.remove(s);
-
-                            System.out.println("Student Deleted Successfully!");
-
-                            deleted = true;
-                            break;
-                        }
-                    }
-
-                    if (!deleted) {
-                        System.out.println("Student Not Found.");
-                    }
+                    service.deleteStudent(deleteId);
 
                     break;
 
                 case 6:
 
-                    saveStudents(students);
+                    service.saveData();
 
                     break;
 
                 case 7:
 
-                    saveStudents(students);
+                    service.saveData();
 
                     System.out.println("Exiting Program...");
                     break;
@@ -166,49 +105,5 @@ class Main {
         } while (choice != 7);
 
         sc.close();
-    }
-
-    // Save students to file
-    static void saveStudents(ArrayList<Student> students) {
-
-        try {
-
-            ObjectOutputStream oos =
-                    new ObjectOutputStream(new FileOutputStream(FILE_NAME));
-
-            oos.writeObject(students);
-
-            oos.close();
-
-            System.out.println("Data Saved Successfully!");
-
-        } catch (Exception e) {
-
-            System.out.println("Error Saving Data.");
-        }
-    }
-
-    // Load students from file
-    static ArrayList<Student> loadStudents() {
-
-        ArrayList<Student> students = new ArrayList<>();
-
-        try {
-
-            ObjectInputStream ois =
-                    new ObjectInputStream(new FileInputStream(FILE_NAME));
-
-            students = (ArrayList<Student>) ois.readObject();
-
-            ois.close();
-
-            System.out.println("Data Loaded Successfully!");
-
-        } catch (Exception e) {
-
-            System.out.println("No Previous Data Found.");
-        }
-
-        return students;
     }
 }
